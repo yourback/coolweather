@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class ChooseAreaFragment extends Fragment {
     private static final int LEVEL_PROVINCE = 0;
     private static final int LEVEL_CITY = 1;
     private static final int LEVEL_COUNTY = 2;
+    private static final String TAG = "ChooseAreaFragment";
 
     private ProgressDialog progressDialog;
 
@@ -77,11 +79,6 @@ public class ChooseAreaFragment extends Fragment {
     private City selectedCity;
 
     /**
-     * 选中的区县
-     */
-    private County selectedCounty;
-
-    /**
      * 当前选中的级别
      */
     private int currentLevel;
@@ -89,6 +86,7 @@ public class ChooseAreaFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.choose_area, container, false);
         backButton = view.findViewById(R.id.back_button);
         titleText = view.findViewById(R.id.title_text);
@@ -101,6 +99,7 @@ public class ChooseAreaFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.e(TAG, "onActivityCreated");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -119,12 +118,12 @@ public class ChooseAreaFragment extends Fragment {
             public void onClick(View view) {
                 if (currentLevel == LEVEL_COUNTY) {
                     queryCities();
-                }
-                if (currentLevel == LEVEL_CITY) {
+                } else if (currentLevel == LEVEL_CITY) {
                     queryProvinces();
                 }
             }
         });
+        queryProvinces();
     }
 
 
@@ -142,7 +141,7 @@ public class ChooseAreaFragment extends Fragment {
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            currentLevel = LEVEL_CITY;
+            currentLevel = LEVEL_PROVINCE;
         } else {
             String address = "http://guolin.tech/api/china";
             queryFromServer(address, "province");
@@ -164,7 +163,7 @@ public class ChooseAreaFragment extends Fragment {
             }
             adapter.notifyDataSetInvalidated();
             listView.setSelection(0);
-            currentLevel = LEVEL_COUNTY;
+            currentLevel = LEVEL_CITY;
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
             String address = "http://guolin.tech/api/china/" + provinceCode;
