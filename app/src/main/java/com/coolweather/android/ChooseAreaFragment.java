@@ -141,7 +141,6 @@ public class ChooseAreaFragment extends Fragment {
         queryProvinces();
     }
 
-
     /**
      * 查询所有省份，本地优先
      */
